@@ -1,0 +1,68 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+
+    <!-- Background with deep dark gradient -->
+    <path android:pathData="M0,0 h320 v180 h-320 z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="320"
+                android:endY="180"
+                android:startX="0"
+                android:startY="0"
+                android:type="linear">
+                <item android:color="#FF0F172A" android:offset="0.0" />
+                <item android:color="#FF020617" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Center Accent Glow -->
+    <path
+        android:pathData="M160,90m-80,0a80,80 0,1,1 160,0a80,80 0,1,1 -160,0"
+        android:fillAlpha="0.1">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:gradientRadius="80"
+                android:centerX="160"
+                android:centerY="90"
+                android:type="radial">
+                <item android:color="#FF3B82F6" android:offset="0.0" />
+                <item android:color="#003B82F6" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- TV Frame -->
+    <path
+        android:pathData="M100,60 h120 a8,8 0 0 1 8,8 v60 a8,8 0 0 1 -8,8 h-120 a8,8 0 0 1 -8,-8 v-60 a8,8 0 0 1 8,-8 z"
+        android:strokeWidth="4"
+        android:strokeColor="#3B82F6" />
+
+    <!-- Stand -->
+    <path
+        android:pathData="M145,136 h30 M160,136 v6"
+        android:strokeWidth="3"
+        android:strokeColor="#3B82F6"
+        android:strokeLineCap="round" />
+
+    <!-- "TV" Text (Simplified Paths) -->
+    <!-- T -->
+    <path
+        android:pathData="M140,80 h26 M153,80 v24"
+        android:strokeWidth="6"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round" />
+
+    <!-- V -->
+    <path
+        android:pathData="M172,80 l8,24 l8,-24"
+        android:strokeWidth="6"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+</vector>

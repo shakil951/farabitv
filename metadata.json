@@ -1,0 +1,6 @@
+{
+  "name": "FARABI TV",
+  "description": "Ultra-lightweight, fast and remote-friendly Android TV IPTV Player by Farabi Ahmed Shakil.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

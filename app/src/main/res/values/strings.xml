@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">FARABI TV</string>
+    <string name="live_stream">● LIVE STREAM</string>
+    <string name="buffering">● BUFFERING</string>
+    <string name="playback_paused">● PLAYBACK PAUSED</string>
+    <string name="channels_loaded">%1$d Channels Loaded</string>
+    <string name="stream_offline_retrying">Stream Offline. Retrying (%1$d/3)...</string>
+    <string name="stream_failed">Stream Failed. Press BACK to select other channel.</string>
+    <string name="channel_not_found">Channel %1$d not found</string>
+    <string name="channel_number_display">CH-%1$s</string>
+</resources>

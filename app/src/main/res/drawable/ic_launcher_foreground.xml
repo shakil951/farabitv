@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- TV Frame -->
+    <path
+        android:pathData="M24,34 h60 a4,4 0 0 1 4,4 v40 a4,4 0 0 1 -4,4 h-60 a4,4 0 0 1 -4,-4 v-40 a4,4 0 0 1 4,-4 z"
+        android:strokeWidth="3"
+        android:strokeColor="#3B82F6" />
+
+    <!-- Stand -->
+    <path
+        android:pathData="M46,82 h16 M54,82 v4"
+        android:strokeWidth="2.5"
+        android:strokeColor="#3B82F6"
+        android:strokeLineCap="round" />
+
+    <!-- "TV" Text -->
+    <!-- T -->
+    <path
+        android:pathData="M44,48 h12 M50,48 v16"
+        android:strokeWidth="4"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round" />
+
+    <!-- V -->
+    <path
+        android:pathData="M60,48 l5,16 l5,-16"
+        android:strokeWidth="4"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>
