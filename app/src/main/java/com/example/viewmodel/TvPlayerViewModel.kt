@@ -55,20 +55,17 @@ class TvPlayerViewModel(application: Application) : AndroidViewModel(application
     private fun loadInitialData() {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
-            // Load cached first for speed
             val cached = withContext(Dispatchers.IO) {
                 PlaylistCache.openInputStream(getApplication())?.use { inputStream ->
                     M3uParser.parse(inputStream.bufferedReader())
                 }
             }
             if (!cached.isNullOrEmpty()) {
-                val sorted = cached.sortedBy { it.number ?: Int.MAX_VALUE }
-                _allChannels.value = sorted
-                _uiState.value = UiState.Success(sorted)
-                loadRecents(sorted)
-                autoPlayLastWatched(sorted)
+                _allChannels.value = cached
+                _uiState.value = UiState.Success(cached)
+                loadRecents(cached)
+                autoPlayLastWatched(cached)
             }
-            // Then refresh from network
             refreshPlaylist()
         }
     }
@@ -76,24 +73,50 @@ class TvPlayerViewModel(application: Application) : AndroidViewModel(application
     fun refreshPlaylist() {
         viewModelScope.launch {
             try {
-                val parsed = withContext(Dispatchers.IO) {
-                    val url = URL("https://raw.githubusercontent.com/FunctionError/PiratesTv/main/combined_playlist.m3u")
-                    url.openStream().use { input ->
-                        PlaylistCache.save(getApplication(), input)
+                val combinedList = withContext(Dispatchers.IO) {
+                    val url1 = URL("https://raw.githubusercontent.com/shakil951/PlaylistCheck/main/combined_playlist.m3u")
+                    val url2 = URL("https://raw.githubusercontent.com/FunctionError/PiratesTv/main/combined_playlist.m3u")
+                    
+                    val list1: List<Channel> = try {
+                        url1.openStream().use { M3uParser.parse(it.bufferedReader()) }
+                    } catch (e: Exception) { emptyList() }
+                    
+                    val list2: List<Channel> = try {
+                        url2.openStream().use { M3uParser.parse(it.bufferedReader()) }
+                    } catch (e: Exception) { emptyList() }
+                    
+                    val result = mutableListOf<Channel>()
+                    var currentNumber = 1
+                    
+                    for (ch in list1) {
+                        result.add(Channel(
+                            name = ch.name,
+                            streamUrl = ch.streamUrl,
+                            logoUrl = ch.logoUrl,
+                            groupTitle = ch.groupTitle,
+                            number = currentNumber++
+                        ))
                     }
                     
-                    PlaylistCache.openInputStream(getApplication())?.use { inputStream ->
-                        M3uParser.parse(inputStream.bufferedReader())
+                    for (ch in list2) {
+                        result.add(Channel(
+                            name = ch.name,
+                            streamUrl = ch.streamUrl,
+                            logoUrl = ch.logoUrl,
+                            groupTitle = ch.groupTitle,
+                            number = currentNumber++
+                        ))
                     }
+                    
+                    result
                 }
                 
-                if (!parsed.isNullOrEmpty()) {
-                    val sorted = parsed.sortedBy { it.number ?: Int.MAX_VALUE }
-                    _allChannels.value = sorted
-                    _uiState.value = UiState.Success(sorted)
-                    loadRecents(sorted)
+                if (combinedList.isNotEmpty()) {
+                    _allChannels.value = combinedList
+                    _uiState.value = UiState.Success(combinedList)
+                    loadRecents(combinedList)
                     if (_playingChannel.value == null) {
-                        autoPlayLastWatched(sorted)
+                        autoPlayLastWatched(combinedList)
                     }
                 } else if (_allChannels.value.isEmpty()) {
                     _uiState.value = UiState.Error("Playlist is empty or failed to load")
@@ -135,7 +158,6 @@ class TvPlayerViewModel(application: Application) : AndroidViewModel(application
         _playingChannel.value = channel
         TvPreferences.saveLastWatchedUrl(getApplication(), channel.streamUrl)
         
-        // Add to recents
         val currentRecents = TvPreferences.getRecentUrls(getApplication()).toMutableList()
         currentRecents.remove(channel.streamUrl)
         currentRecents.add(0, channel.streamUrl)
@@ -144,18 +166,15 @@ class TvPlayerViewModel(application: Application) : AndroidViewModel(application
         }
         TvPreferences.saveRecentUrls(getApplication(), currentRecents)
         
-        // Refresh recents list
         loadRecents(_allChannels.value)
     }
 
     fun getPlayingChannelIndex(): Int {
         val current = _playingChannel.value ?: return -1
         val channels = _allChannels.value
-        // First try finding the exact object
         val index = channels.indexOf(current)
         if (index != -1) return index
         
-        // Fallback to comparing key properties if object reference is different
         return channels.indexOfFirst { 
             (it.streamUrl == current.streamUrl) && (it.name == current.name) && (it.number == current.number)
         }
@@ -189,10 +208,7 @@ class TvPlayerViewModel(application: Application) : AndroidViewModel(application
         val channels = _allChannels.value
         if (channels.isEmpty()) return false
         
-        var found = channels.find { it.number == number }
-        if (found == null && number in 1..channels.size) {
-            found = channels[number - 1]
-        }
+        val found = channels.find { it.number == number }
         
         return if (found != null) {
             playChannel(found)
