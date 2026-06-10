@@ -186,27 +186,28 @@ class MainActivity : androidx.activity.ComponentActivity() {
     }
 
     private fun setupCategoryTabs() {
-        binding.tabAll.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
+        val selectTab = { isAll: Boolean ->
+            if (isAll) {
                 binding.tabAll.setBackgroundColor("#3B82F6".toColorInt())
                 binding.tabAll.setTextColor(android.graphics.Color.WHITE)
+                binding.tabRecent.setBackgroundColor("#1F2937".toColorInt())
+                binding.tabRecent.setTextColor("#9CA3AF".toColorInt())
                 viewModel.changeFilterMode(TvPlayerViewModel.FilterMode.ALL)
             } else {
+                binding.tabRecent.setBackgroundColor("#3B82F6".toColorInt())
+                binding.tabRecent.setTextColor(android.graphics.Color.WHITE)
                 binding.tabAll.setBackgroundColor("#1F2937".toColorInt())
                 binding.tabAll.setTextColor("#9CA3AF".toColorInt())
+                viewModel.changeFilterMode(TvPlayerViewModel.FilterMode.RECENTS)
             }
         }
 
-        binding.tabRecent.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.tabRecent.setBackgroundColor("#3B82F6".toColorInt())
-                binding.tabRecent.setTextColor(android.graphics.Color.WHITE)
-                viewModel.changeFilterMode(TvPlayerViewModel.FilterMode.RECENTS)
-            } else {
-                binding.tabRecent.setBackgroundColor("#1F2937".toColorInt())
-                binding.tabRecent.setTextColor("#9CA3AF".toColorInt())
-            }
-        }
+        binding.tabAll.setOnFocusChangeListener { _, hasFocus -> if (hasFocus) selectTab(true) }
+        binding.tabRecent.setOnFocusChangeListener { _, hasFocus -> if (hasFocus) selectTab(false) }
+
+        // Add Click Listeners for Mobile support
+        binding.tabAll.setOnClickListener { selectTab(true) }
+        binding.tabRecent.setOnClickListener { selectTab(false) }
     }
 
     private fun observeViewModel() {
